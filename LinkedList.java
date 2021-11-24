@@ -1,6 +1,7 @@
 import java.util.HashSet;
+import java.util.Stack;
 
-public class LinkedListImplementation {
+public class LinkedList {
   public static void add(LinkedListNode head, int data) {
     LinkedListNode curr = head;
     while (curr.next != null) {
@@ -41,7 +42,7 @@ public class LinkedListImplementation {
 
   public static void removeAtIndex(LinkedListNode head, int index) {
     LinkedListNode curr = head;
-    LinkedListNode prev = null;
+    LinkedListNode prev = curr;
     for (int i = 0; i < index; i++) {
       prev = curr;
       curr = curr.next;
@@ -108,11 +109,118 @@ public class LinkedListImplementation {
     
   }
 
+  public static LinkedListNode reverse(LinkedListNode head) {
+    LinkedListNode prev = null, curr = head, next = null;
+    while (curr != null) {
+      next = curr.next;
+      curr.next = prev;
+      prev = curr;
+      curr = next;
+    }
+    head = prev;
+    return head;
+  }
+
+  public static void printInReverse(LinkedListNode head) {
+    if (head == null) {
+      return;
+    }
+    printInReverse(head.next);
+    System.out.println(head.data);
+  }
+
+  public static int get(LinkedListNode head, int index) {
+    LinkedListNode curr = head;
+    for (int i = 0; i < index; i++) curr = curr.next;
+    return curr.data;
+  }
+
+  public static LinkedListNode insertAtHead(LinkedListNode head, int data) {
+    LinkedListNode newNode = new LinkedListNode(data);
+    newNode.next = head;
+    head = newNode;
+    return head;
+  }
+
+  public static void insertAtTail(LinkedListNode head, int data) {
+    LinkedListNode newNode = new LinkedListNode(data);
+    LinkedListNode curr = head;
+    while (curr.next != null) curr = curr.next;
+    curr.next = newNode;
+  }
+
+  // FIXME
+  public static void addAtIndex(LinkedListNode head, int index, int data) {
+    int size = getSize(head);
+    
+    // Add a node of value val before the indexth node in the linked list. If index equals the length of the linked list, the node will be appended to the end of the linked list. If index is greater than the length, the node will not be inserted.
+    if (index < 0 || index > size) return;
+    
+    if (index == 0) insertAtHead(head, data);
+    if (index == size) insertAtTail(head, data);
+    
+    LinkedListNode newNode = new LinkedListNode(data);
+    
+    LinkedListNode curr = head;
+    for (int i = 0; i < index; i++) curr = curr.next;
+    newNode.next = curr.next;
+    curr.next = newNode;
+  }
+
+  public static boolean isPalindrome(LinkedListNode head) {
+    int size = getSize(head);
+    
+    if (size % 2 == 0) return isEvenPalindrome(head, size);
+    else return isOddPalindrome(head, size);
+}
+
+public static int getSize(LinkedListNode head) {
+    int size = 0;
+    
+    while (head != null) {
+        head = head.next;
+        size++;
+    }
+    
+    return size;
+}
+
+public static boolean isEvenPalindrome(LinkedListNode head, int size) {
+    Stack<Integer> stack = new Stack<>();
+    
+    for (int i = 0; i < size / 2; i++) {
+        stack.push(head.data);
+        head = head.next;
+    }
+    
+    for (int i = 0; i < size / 2; i++) {
+        if (head.data != stack.pop()) return false;
+        head = head.next;
+    }
+    return true;
+}
+
+public static boolean isOddPalindrome(LinkedListNode head, int size) {
+  Stack<Integer> stack = new Stack<>();
+
+  for (int i = 0; i < size / 2; i++) {
+    stack.push(head.data);
+    head = head.next;
+  }
+
+  head = head.next;
+
+  for (int i = 0; i < size / 2; i++) {
+    if (head.data != stack.pop()) return false;
+    head = head.next;
+  }
+  return true;
+}
+
   public static void main(String[] args) {
     LinkedListNode head = new LinkedListNode(0);
-    addMultiple(head, 1,9,8,7,2,3,4);
-    partition(head, 5);
-    printList(head);
+    addMultiple(head, 1,2,1);
+    System.out.println(isPalindrome(head));
   }
 
   public static class LinkedListNode {
